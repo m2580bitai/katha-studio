@@ -3,6 +3,10 @@ import { comics, characters, studio, comicById } from "./comics.js";
 const app = document.getElementById("app");
 let autoTimer = null;
 
+function asset(path) {
+  return `${import.meta.env.BASE_URL}${String(path).replace(/^\//, "")}`;
+}
+
 function path() {
   const hash = location.hash.replace(/^#/, "") || "/";
   return hash.startsWith("/") ? hash : `/${hash}`;
@@ -23,7 +27,7 @@ function nav(active) {
   return `
     <header class="wrap nav">
       <a class="brand" href="#/">
-        <img src="/images/favicon.png" alt="" />
+        <img src="${asset("images/favicon.png")}" alt="" />
         <strong>Katha Studio</strong>
       </a>
       <nav class="nav-links">
@@ -48,7 +52,7 @@ function comicCard(c) {
   return `
     <article class="card">
       <a href="#/read/${c.id}" style="color:inherit;text-decoration:none;display:flex;flex-direction:column;flex:1">
-        <img src="${c.cover}" alt="${c.title} cover" />
+        <img src="${asset(c.cover)}" alt="${c.title} cover" />
         <div class="card-body">
           <div class="meta">${c.issue} · ${c.genre} · ${c.place}</div>
           <h3>${c.title}</h3>
@@ -57,7 +61,7 @@ function comicCard(c) {
       </a>
       <div style="display:flex;gap:8px;padding:0 14px 14px;flex-wrap:wrap">
         <a class="chip" href="#/read/${c.id}">Read animated</a>
-        <a class="chip" href="${c.pdf}" download>Download PDF</a>
+        <a class="chip" href="${asset(c.pdf)}" download>Download PDF</a>
       </div>
     </article>
   `;
@@ -77,7 +81,7 @@ function home() {
         </div>
       </div>
       <div class="hero-art">
-        <img src="/images/hero-banner.png" alt="Katha Studio characters collage" />
+        <img src="${asset("images/hero-banner.png")}" alt="Katha Studio characters collage" />
         <div class="stamp">5 issues · PDF ready</div>
       </div>
     </section>
@@ -113,7 +117,7 @@ function charactersPage() {
           .map(
             (ch) => `
           <article class="card char-card">
-            <img src="${ch.portrait}" alt="${ch.name}" />
+            <img src="${asset(ch.portrait)}" alt="${ch.name}" />
             <div class="card-body">
               <div class="meta">${ch.role} · ${ch.place}</div>
               <h3>${ch.name}</h3>
@@ -151,13 +155,13 @@ function reader(comic, pageIndex, autoplay) {
           <button class="btn" data-act="prev" ${pageIndex === 0 ? "disabled" : ""}>Back</button>
           <button class="btn" data-act="next" ${pageIndex === n - 1 ? "disabled" : ""}>Next panel</button>
           <button class="btn ${autoplay ? "btn-teal" : ""}" data-act="auto">${autoplay ? "Stop autoplay" : "Autoplay"}</button>
-          <a class="btn btn-primary" href="${comic.pdf}" download>Download PDF</a>
+          <a class="btn btn-primary" href="${asset(comic.pdf)}" download>Download PDF</a>
         </div>
       </div>
       <div class="progress">${comic.pages.map((_, i) => `<i class="${i <= pageIndex ? "on" : ""}"></i>`).join("")}</div>
       <p class="page-num">Panel ${pageIndex + 1} / ${n} · ${comic.hero}</p>
       <div class="stage enter" style="border-color:${comic.accent}">
-        <img src="${page.image}" alt="${comic.title} panel ${pageIndex + 1}" />
+        <img src="${asset(page.image)}" alt="${comic.title} panel ${pageIndex + 1}" />
         ${fxFor(comic.mood)}
         <div class="sfx">${page.sfx}</div>
         <div class="balloon">
