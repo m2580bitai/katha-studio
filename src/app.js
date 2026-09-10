@@ -73,7 +73,7 @@ function home() {
     <section class="wrap hero">
       <div>
         <div class="kicker">Animated comics from India</div>
-        <h1>Stories that remember rain, rail, mud, and flying autos.</h1>
+        <h1>Stories that remember rain, rail, mud, ghazals, and flying autos.</h1>
         <p class="lede">${studio.blurb}</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#/library">Open the library</a>
@@ -82,7 +82,7 @@ function home() {
       </div>
       <div class="hero-art">
         <img src="${asset("images/hero-banner.png")}" alt="Katha Studio characters collage" />
-        <div class="stamp">5 issues · PDF ready</div>
+        <div class="stamp">10 books · 22 pages · PDF</div>
       </div>
     </section>
     <section class="wrap section">
@@ -97,9 +97,9 @@ function library() {
   return `
     ${nav("library")}
     <section class="wrap section">
-      <div class="kicker">All issues</div>
-      <h2>Pick a comic. Play it. Take the PDF.</h2>
-      <p class="lede">Each issue is a short original story with original Indian characters. Use autoplay to watch panels arrive like a motion comic.</p>
+      <div class="kicker">All books</div>
+      <h2>Pick a book. Play it. Take the PDF.</h2>
+      <p class="lede">Each title is a 22-page original story with original Indian characters. Autoplay reads the book like a motion comic. PDFs pack every page, caption, balloon, and story passage.</p>
       <div class="grid" style="margin-top:22px">${comics.map(comicCard).join("")}</div>
     </section>
     ${footer()}
@@ -159,9 +159,9 @@ function reader(comic, pageIndex, autoplay) {
         </div>
       </div>
       <div class="progress">${comic.pages.map((_, i) => `<i class="${i <= pageIndex ? "on" : ""}"></i>`).join("")}</div>
-      <p class="page-num">Panel ${pageIndex + 1} / ${n} · ${comic.hero}</p>
+      <p class="page-num">Page ${pageIndex + 1} / ${n} · ${comic.hero}</p>
       <div class="stage enter" style="border-color:${comic.accent}">
-        <img src="${asset(page.image)}" alt="${comic.title} panel ${pageIndex + 1}" />
+        <img src="${asset(page.image)}" alt="${comic.title} page ${pageIndex + 1}" />
         ${fxFor(comic.mood)}
         <div class="sfx">${page.sfx}</div>
         <div class="balloon">
@@ -170,7 +170,11 @@ function reader(comic, pageIndex, autoplay) {
         </div>
         <div class="caption-bar">${page.caption}</div>
       </div>
-      <p style="color:var(--ink-soft);margin:16px 0 36px">Tip: arrow keys move panels. Space toggles autoplay. PDF packs every panel, caption, and balloon into an A4 comic file.</p>
+      <article class="story-block">
+        <h3>The page in full</h3>
+        <p>${page.story || page.caption}</p>
+      </article>
+      <p style="color:var(--ink-soft);margin:16px 0 36px">Tip: arrow keys turn pages. Space toggles autoplay. Each book is 22 pages, downloadable as a full A4 PDF.</p>
     </section>
     ${footer()}
   `;
@@ -220,7 +224,7 @@ function bindReader(comic, pageIndex, autoplay) {
       } else {
         go(`#/read/${comic.id}/${pageIndex}`);
       }
-    }, 4200);
+    }, 6500);
   }
 }
 

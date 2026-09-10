@@ -260,6 +260,29 @@ h1 { font-size: clamp(2.4rem, 6vw, 4.6rem); line-height: 0.92; }
   font-size: 0.85rem;
 }
 
+.story-block {
+  margin: 18px 0 0;
+  background: #fff8ea;
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  padding: 16px 18px 18px;
+  box-shadow: 6px 6px 0 var(--ink);
+}
+.story-block h3 {
+  font-family: Syne, sans-serif;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0 0 8px;
+  color: var(--saffron);
+}
+.story-block p {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
 .footer {
   border-top: 2px solid var(--ink);
   padding: 22px 0 40px;

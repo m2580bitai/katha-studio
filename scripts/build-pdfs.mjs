@@ -6,11 +6,15 @@ import { comics } from "../src/comics.js";
 const root = path.resolve(import.meta.dirname, "..");
 const outDir = path.join(root, "public", "pdfs");
 fs.mkdirSync(outDir, { recursive: true });
+const cache = new Map();
 
 function dataUrl(rel) {
   const file = path.join(root, "public", rel.replace(/^\//, ""));
-  const buf = fs.readFileSync(file);
-  return `data:image/png;base64,${buf.toString("base64")}`;
+  if (!cache.has(file)) {
+    const buf = fs.readFileSync(file);
+    cache.set(file, `data:image/png;base64,${buf.toString("base64")}`);
+  }
+  return cache.get(file);
 }
 
 function filename(title) {
@@ -26,19 +30,19 @@ for (const comic of comics) {
   pdf.rect(0, 0, w, h, "F");
   pdf.setTextColor(243, 230, 204);
   pdf.setFont("times", "bold");
-  pdf.setFontSize(28);
-  pdf.text("KATHA STUDIO", 16, 40);
-  pdf.setFontSize(22);
-  pdf.text(comic.title, 16, 58);
+  pdf.setFontSize(26);
+  pdf.text("KATHA STUDIO", 16, 36);
+  pdf.setFontSize(20);
+  pdf.text(comic.title, 16, 52);
   pdf.setFont("times", "italic");
-  pdf.setFontSize(13);
-  pdf.text(pdf.splitTextToSize(comic.logline, 178), 16, 72);
+  pdf.setFontSize(12);
+  pdf.text(pdf.splitTextToSize(comic.logline, 178), 16, 64);
   pdf.setFont("times", "normal");
   pdf.setFontSize(11);
-  pdf.text(`${comic.issue}  ·  ${comic.genre}  ·  ${comic.place}`, 16, 92);
-  pdf.text(`Lead: ${comic.hero}`, 16, 100);
-  pdf.text("Original Indian comic  ·  For personal reading", 16, 270);
-  pdf.addImage(dataUrl(comic.cover), "PNG", 42, 112, 126, 168, undefined, "FAST");
+  pdf.text(`${comic.issue}  ·  ${comic.genre}  ·  ${comic.place}`, 16, 88);
+  pdf.text(`Lead: ${comic.hero}  ·  ${comic.pages.length} pages`, 16, 96);
+  pdf.text("Original Indian graphic book  ·  For personal reading", 16, 270);
+  pdf.addImage(dataUrl(comic.cover), "PNG", 48, 108, 114, 152, comic.cover, "FAST");
 
   for (let i = 0; i < comic.pages.length; i++) {
     const page = comic.pages[i];
@@ -50,25 +54,33 @@ for (const comic of comics) {
     pdf.rect(8, 8, 194, 281);
     pdf.setTextColor(26, 18, 8);
     pdf.setFont("times", "bold");
-    pdf.setFontSize(14);
-    pdf.text(`${comic.title}  ·  ${comic.issue}`, 14, 18);
-    pdf.setFontSize(10);
-    pdf.text(`Panel ${i + 1} of ${comic.pages.length}`, 14, 25);
-    pdf.addImage(dataUrl(page.image), "PNG", 14, 30, 182, 118, undefined, "FAST");
-    pdf.setFont("times", "italic");
-    pdf.setFontSize(12);
-    pdf.text(pdf.splitTextToSize(page.caption, 178), 16, 160);
-    pdf.setFillColor(255, 253, 246);
-    pdf.roundedRect(16, 188, 178, 52, 4, 4, "FD");
-    pdf.setFont("times", "bold");
-    pdf.setFontSize(10);
-    pdf.text(String(page.speaker).toUpperCase(), 22, 200);
-    pdf.setFont("times", "normal");
     pdf.setFontSize(13);
-    pdf.text(pdf.splitTextToSize(`“${page.balloon}”`, 166), 22, 210);
+    pdf.text(`${comic.title}  ·  ${comic.issue}`, 14, 17);
+    pdf.setFontSize(10);
+    pdf.text(`Page ${i + 1} of ${comic.pages.length}`, 14, 23);
+    pdf.addImage(dataUrl(page.image), "PNG", 14, 26, 182, 88, page.image, "FAST");
+
+    pdf.setFont("times", "italic");
+    pdf.setFontSize(11);
+    pdf.text(pdf.splitTextToSize(page.caption, 178), 16, 122);
+
+    pdf.setFont("times", "normal");
+    pdf.setFontSize(10);
+    const story = pdf.splitTextToSize(page.story || "", 178);
+    pdf.text(story.slice(0, 9), 16, 138);
+
+    pdf.setFillColor(255, 253, 246);
+    pdf.roundedRect(16, 198, 178, 48, 4, 4, "FD");
     pdf.setFont("times", "bold");
-    pdf.setFontSize(16);
-    pdf.text(page.sfx, 16, 256);
+    pdf.setFontSize(9);
+    pdf.text(String(page.speaker).toUpperCase(), 22, 208);
+    pdf.setFont("times", "normal");
+    pdf.setFontSize(12);
+    pdf.text(pdf.splitTextToSize(`“${page.balloon}”`, 166), 22, 216);
+
+    pdf.setFont("times", "bold");
+    pdf.setFontSize(14);
+    pdf.text(page.sfx, 16, 258);
     pdf.setFontSize(9);
     pdf.setFont("times", "italic");
     pdf.text("Katha Studio  ·  Original work", 16, 278);
@@ -76,5 +88,5 @@ for (const comic of comics) {
 
   const dest = path.join(outDir, filename(comic.title));
   fs.writeFileSync(dest, Buffer.from(pdf.output("arraybuffer")));
-  console.log("wrote", dest);
+  console.log("wrote", dest, comic.pages.length, "pages");
 }
