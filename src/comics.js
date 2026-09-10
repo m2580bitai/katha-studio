@@ -13,7 +13,7 @@ export const studio = {
   name: "Katha Studio",
   tagline: "Original Indian comics that move.",
   blurb:
-    "Ten original graphic books — twenty-two pages each — from Kerala rain to Ladakh sun, Lucknow ghazals to Chennai nets. New faces join the rack. Read them animated. Take them home as PDFs.",
+    "Ten original graphic books — twenty-two pages each — from Kerala rain to Ladakh sun. Read them animated, watch a short motion trailer, or take the PDF home.",
 };
 
 export const characters = [
@@ -138,4 +138,8 @@ export const comics = [
 
 export function comicById(id) {
   return comics.find((c) => c.id === id);
+}
+
+export function comicVideo(comic) {
+  return `/videos/${comic.id}.mp4`;
 }

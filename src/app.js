@@ -1,4 +1,4 @@
-import { comics, characters, studio, comicById } from "./comics.js";
+import { comics, characters, studio, comicById, comicVideo } from "./comics.js";
 
 const app = document.getElementById("app");
 let autoTimer = null;
@@ -43,7 +43,7 @@ function footer() {
   return `
     <footer class="wrap footer">
       <span>Original Indian characters and stories. Not affiliated with any existing comic house.</span>
-      <span>Read on screen · Download as PDF</span>
+      <span>Read on screen · Watch trailers · Download as PDF</span>
     </footer>
   `;
 }
@@ -61,6 +61,7 @@ function comicCard(c) {
       </a>
       <div style="display:flex;gap:8px;padding:0 14px 14px;flex-wrap:wrap">
         <a class="chip" href="#/read/${c.id}">Read animated</a>
+        <a class="chip" href="#/watch/${c.id}">Watch video</a>
         <a class="chip" href="${asset(c.pdf)}" download>Download PDF</a>
       </div>
     </article>
@@ -82,7 +83,7 @@ function home() {
       </div>
       <div class="hero-art">
         <img src="${asset("images/hero-banner.png")}" alt="Katha Studio characters collage" />
-        <div class="stamp">10 books · 22 pages · PDF</div>
+        <div class="stamp">10 books · video + PDF</div>
       </div>
     </section>
     <section class="wrap section">
@@ -99,7 +100,7 @@ function library() {
     <section class="wrap section">
       <div class="kicker">All books</div>
       <h2>Pick a book. Play it. Take the PDF.</h2>
-      <p class="lede">Each title is a 22-page original story with original Indian characters. Autoplay reads the book like a motion comic. PDFs pack every page, caption, balloon, and story passage.</p>
+      <p class="lede">Each title is a 22-page original story. Autoplay reads the book like a motion comic. Watch a short Ken-Burns trailer, or download the A4 PDF.</p>
       <div class="grid" style="margin-top:22px">${comics.map(comicCard).join("")}</div>
     </section>
     ${footer()}
@@ -156,6 +157,7 @@ function reader(comic, pageIndex, autoplay) {
           <button class="btn" data-act="next" ${pageIndex === n - 1 ? "disabled" : ""}>Next panel</button>
           <button class="btn ${autoplay ? "btn-teal" : ""}" data-act="auto">${autoplay ? "Stop autoplay" : "Autoplay"}</button>
           <a class="btn btn-primary" href="${asset(comic.pdf)}" download>Download PDF</a>
+          <a class="btn" href="#/watch/${comic.id}">Watch video</a>
         </div>
       </div>
       <div class="progress">${comic.pages.map((_, i) => `<i class="${i <= pageIndex ? "on" : ""}"></i>`).join("")}</div>
@@ -182,6 +184,33 @@ function reader(comic, pageIndex, autoplay) {
 
 function notFound() {
   return `${nav("home")}<section class="wrap section"><h2>That issue wandered off.</h2><a class="btn" href="#/library">Back to library</a></section>`;
+}
+
+function parseWatch() {
+  const parts = path().split("/").filter(Boolean);
+  if (parts[0] !== "watch") return null;
+  return comicById(parts[1]) || null;
+}
+
+function watchPage(comic) {
+  const src = asset(comicVideo(comic));
+  return `
+    ${nav("library")}
+    <section class="wrap section">
+      <div class="kicker">${comic.issue} · motion trailer</div>
+      <h2>${comic.title}</h2>
+      <p class="lede">${comic.logline}</p>
+      <video class="trailer" controls autoplay muted playsinline loop poster="${asset(comic.cover)}">
+        <source src="${src}" type="video/mp4" />
+      </video>
+      <div class="hero-actions" style="margin-top:16px">
+        <a class="btn btn-primary" href="#/read/${comic.id}">Read the book</a>
+        <a class="btn" href="${asset(comic.pdf)}" download>Download PDF</a>
+        <a class="btn" href="#/library">Library</a>
+      </div>
+    </section>
+    ${footer()}
+  `;
 }
 
 function parseRead() {
@@ -244,6 +273,12 @@ function render() {
   if (p === "/characters") {
     stopAuto();
     app.innerHTML = charactersPage();
+    return;
+  }
+  const watch = parseWatch();
+  if (watch) {
+    stopAuto();
+    app.innerHTML = watchPage(watch);
     return;
   }
   const read = parseRead();
