@@ -43,7 +43,7 @@ function footer() {
   return `
     <footer class="wrap footer">
       <span>Original Indian characters and stories. Not affiliated with any existing comic house.</span>
-      <span>Read on screen · Watch trailers · Download as PDF</span>
+      <span>Read on screen · Watch voiced videos · Download as PDF</span>
     </footer>
   `;
 }
@@ -100,7 +100,7 @@ function library() {
     <section class="wrap section">
       <div class="kicker">All books</div>
       <h2>Pick a book. Play it. Take the PDF.</h2>
-      <p class="lede">Each title is a 22-page original story. Autoplay reads the book like a motion comic. Watch a short Ken-Burns trailer, or download the A4 PDF.</p>
+      <p class="lede">Each title is a 22-page original story. Watch the voiced HD video, read it as a motion comic, or download the A4 PDF.</p>
       <div class="grid" style="margin-top:22px">${comics.map(comicCard).join("")}</div>
     </section>
     ${footer()}
@@ -197,12 +197,13 @@ function watchPage(comic) {
   return `
     ${nav("library")}
     <section class="wrap section">
-      <div class="kicker">${comic.issue} · motion trailer</div>
+      <div class="kicker">${comic.issue} · voiced motion comic</div>
       <h2>${comic.title}</h2>
       <p class="lede">${comic.logline}</p>
-      <video class="trailer" controls autoplay muted playsinline loop poster="${asset(comic.cover)}">
+      <video class="trailer" controls playsinline preload="metadata" poster="${asset(comic.cover)}">
         <source src="${src}" type="video/mp4" />
       </video>
+      <p style="color:var(--ink-soft);margin:12px 0 0">Voiced 16:9 HD video of the full 22-page book. Press play to hear narration and dialogue.</p>
       <div class="hero-actions" style="margin-top:16px">
         <a class="btn btn-primary" href="#/read/${comic.id}">Read the book</a>
         <a class="btn" href="${asset(comic.pdf)}" download>Download PDF</a>
