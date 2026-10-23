@@ -381,7 +381,7 @@ function bookReader(book, chapterIndex) {
       </div>
       <p class="page-num">Chapter ${ch.num} of ${n} · ${ch.title}</p>
       <article class="book-chapter">
-        <h3 class="chapter-title"><span class="chapter-num">${ch.num}</span> ${ch.title}</h3>
+        <h3 class="chapter-title"><span class="chapter-num">${ch.num}</span><span>${ch.title}</span></h3>
         <div class="book-prose">${paras}</div>
       </article>
       <p class="book-meta-footer">${book.imprint} · ${book.year}</p>

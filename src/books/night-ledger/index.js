@@ -5,7 +5,7 @@ export const nightLedger = {
   kind: "thriller",
   title: "Night Ledger",
   subtitle: "A Novel",
-  author: "Ananya Krish",
+  author: "Manish",
   imprint: "Katha Studio Press",
   year: 2026,
   isbn: "KS-2026-NL-1",

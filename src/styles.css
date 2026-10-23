@@ -373,39 +373,62 @@ h1 { font-size: clamp(2.4rem, 6vw, 4.6rem); line-height: 0.92; }
   color: var(--saffron);
 }
 .book-reader {
-  max-width: 42rem;
+  max-width: 38rem;
   margin: 0 auto;
   padding-bottom: 48px;
 }
+.book-reader h2 {
+  font-family: Fraunces, Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.book-reader .reader-top .kicker {
+  font-family: Syne, sans-serif;
+  letter-spacing: 0.08em;
+}
 .book-chapter {
-  border: 3px solid var(--ink);
-  background: #fffdf6;
-  padding: 28px 32px 36px;
-  box-shadow: 8px 10px 0 var(--ink);
-  border-radius: 4px;
+  border: 1px solid #1a120833;
+  background: #fffdf8;
+  padding: 32px 36px 40px;
+  box-shadow: 0 1px 0 #1a120814, 0 12px 40px #1a120812;
+  border-radius: 2px;
 }
 .chapter-title {
-  font-family: Syne, sans-serif;
-  font-size: 1.35rem;
-  margin: 0 0 24px;
-  letter-spacing: 0.04em;
+  font-family: Fraunces, Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 28px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
+  line-height: 1.35;
+  border-bottom: 1px solid #1a120822;
+  padding-bottom: 16px;
 }
 .chapter-num {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 500;
   color: var(--saffron);
-  margin-right: 8px;
+  margin-bottom: 8px;
+  letter-spacing: -0.03em;
 }
 .book-prose {
-  font-size: 1.08rem;
-  line-height: 1.75;
-  color: var(--ink);
+  font-family: Literata, Georgia, "Times New Roman", serif;
+  font-size: 1.125rem;
+  line-height: 1.82;
+  color: #1a1208;
+  font-feature-settings: "liga" 1, "kern" 1;
 }
 .book-prose p {
-  margin: 0 0 1.1em;
-  text-indent: 1.5em;
+  margin: 0 0 1.15em;
+  text-align: justify;
+  hyphens: auto;
 }
-.book-prose p:first-child {
-  text-indent: 0;
+.book-prose p + p {
+  text-indent: 1.75em;
+}
+.book-list .book-card h3 {
+  font-family: Fraunces, Georgia, serif;
 }
 .book-meta-footer {
   margin-top: 24px;
