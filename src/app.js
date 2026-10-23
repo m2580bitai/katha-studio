@@ -1,4 +1,5 @@
 import { comics, characters, studio, comicById, comicVideo } from "./comics.js";
+import { lifeReels, lifeReelById } from "./life-reels.js";
 
 const app = document.getElementById("app");
 let autoTimer = null;
@@ -34,6 +35,7 @@ function nav(active) {
         <a href="#/" ${active === "home" ? 'style="background:var(--saffron);color:#fffaf2"' : ""}>Home</a>
         <a href="#/library" ${active === "library" ? 'style="background:var(--saffron);color:#fffaf2"' : ""}>Library</a>
         <a href="#/characters" ${active === "characters" ? 'style="background:var(--saffron);color:#fffaf2"' : ""}>Characters</a>
+        <a href="#/reels" ${active === "reels" ? 'style="background:var(--saffron);color:#fffaf2"' : ""}>Life reels</a>
       </nav>
     </header>
   `;
@@ -43,7 +45,7 @@ function footer() {
   return `
     <footer class="wrap footer">
       <span>Original Indian characters and stories. Not affiliated with any existing comic house.</span>
-      <span>Read on screen · Watch voiced videos · Download as PDF</span>
+      <span>Read on screen · Watch voiced videos · Download reels & PDF</span>
     </footer>
   `;
 }
@@ -89,6 +91,12 @@ function home() {
     <section class="wrap section">
       <h2>This week’s rack</h2>
       <div class="grid">${comics.map(comicCard).join("")}</div>
+    </section>
+    <section class="wrap section">
+      <div class="kicker">New · voiced life stories</div>
+      <h2>Seven reels that sound like real people.</h2>
+      <p class="lede">Hindi voice, moving characters, no dialogue on screen — watch in the browser or download for Instagram.</p>
+      <a class="btn btn-primary" href="#/reels">Open life reels</a>
     </section>
     ${footer()}
   `;
@@ -192,6 +200,88 @@ function parseWatch() {
   return comicById(parts[1]) || null;
 }
 
+function reelCard(reel) {
+  const src = asset(reel.video);
+  const poster = asset(reel.poster);
+  return `
+    <article class="reel-card">
+      <a href="#/reels/${reel.id}" class="reel-thumb-link">
+        <div class="reel-phone">
+          <video class="reel-preview" muted playsinline preload="metadata" poster="${poster}">
+            <source src="${src}" type="video/mp4" />
+          </video>
+        </div>
+      </a>
+      <div class="reel-card-body">
+        <div class="meta">${reel.theme}</div>
+        <h3><a href="#/reels/${reel.id}" style="color:inherit;text-decoration:none">${reel.title}</a></h3>
+        <p>${reel.end}</p>
+        <div class="reel-actions">
+          <a class="chip" href="#/reels/${reel.id}">Watch</a>
+          <a class="chip btn-teal" href="${src}" download="${reel.downloadName}">Download MP4</a>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function reelsPage() {
+  return `
+    ${nav("reels")}
+    <section class="wrap section">
+      <div class="kicker">Life stories · 9:16</div>
+      <h2>Relatable reels with Hindi voice.</h2>
+      <p class="lede">Characters speak — captions stay off the video. On mobile, tap play or use Download to save for Instagram. Files are 1080×1920, about one minute each.</p>
+      <div class="reel-grid">${lifeReels.map(reelCard).join("")}</div>
+    </section>
+    ${footer()}
+  `;
+}
+
+function parseReel() {
+  const parts = path().split("/").filter(Boolean);
+  if (parts[0] !== "reels") return null;
+  if (!parts[1]) return { list: true };
+  return lifeReelById(parts[1]) || false;
+}
+
+function reelWatchPage(reel) {
+  const src = asset(reel.video);
+  const poster = asset(reel.poster);
+  return `
+    ${nav("reels")}
+    <section class="wrap section reel-watch">
+      <div class="kicker">${reel.theme}</div>
+      <h2>${reel.title}</h2>
+      <p class="lede">${reel.end}</p>
+      <div class="reel-phone reel-phone--solo">
+        <video class="reel-player" controls playsinline preload="metadata" poster="${poster}">
+          <source src="${src}" type="video/mp4" />
+        </video>
+      </div>
+      <p class="reel-hint">Turn sound on. Dialogue is voice-only — no text on the video.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="${src}" download="${reel.downloadName}">Download for Instagram</a>
+        <a class="btn" href="#/reels">All reels</a>
+      </div>
+      <p class="reel-caption-meta">${reel.caption}</p>
+    </section>
+    ${footer()}
+  `;
+}
+
+function bindReelPreviews() {
+  app.querySelectorAll(".reel-preview").forEach((v) => {
+    v.addEventListener("mouseenter", () => {
+      v.play().catch(() => {});
+    });
+    v.addEventListener("mouseleave", () => {
+      v.pause();
+      v.currentTime = 0;
+    });
+  });
+}
+
 function watchPage(comic) {
   const src = asset(comicVideo(comic));
   return `
@@ -274,6 +364,23 @@ function render() {
   if (p === "/characters") {
     stopAuto();
     app.innerHTML = charactersPage();
+    return;
+  }
+  const reel = parseReel();
+  if (reel === false) {
+    stopAuto();
+    app.innerHTML = notFound();
+    return;
+  }
+  if (reel?.list) {
+    stopAuto();
+    app.innerHTML = reelsPage();
+    bindReelPreviews();
+    return;
+  }
+  if (reel) {
+    stopAuto();
+    app.innerHTML = reelWatchPage(reel);
     return;
   }
   const watch = parseWatch();

@@ -4,12 +4,17 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "reels": "node scripts/build-reels.mjs",
+    "life-reels": "node scripts/build-life-reels.mjs",
     "videos": "node scripts/build-videos.mjs",
+    "youtube:auth": "node scripts/youtube-auth.mjs",
+    "youtube:upload": "node scripts/upload-youtube.mjs",
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1"
   },
   "dependencies": {
+    "googleapis": "^178.1.1",
     "jspdf": "^2.5.2"
   },
   "devDependencies": {
