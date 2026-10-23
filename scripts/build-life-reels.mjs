@@ -24,7 +24,6 @@ const SAFE_TOP = 200;
 const SAFE_BOTTOM = 360;
 
 const FEMALE = /meera|amma|behen|priya|leela|bommi|sana|swara/i;
-const MALE = /rohan|aman|papa|kabir|arjun|boss|neeraj|chaiwala|friend|hero|narrator|vikram|raja|chotu|sonu|guruji/i;
 
 function voiceFor(speaker) {
   if (FEMALE.test(speaker)) return "hi-IN-SwaraNeural";
@@ -181,7 +180,8 @@ async function makeBeatClip({
   dest,
   zoomIn,
 }) {
-  const dur = Math.min(10.5, Math.max(6.8, (await probeSeconds(audioPath)) + 0.75));
+  const audioLen = await probeSeconds(audioPath);
+  const dur = Math.max(5.5, audioLen + 0.45);
   const frames = Math.round(dur * FPS);
   const progress = Math.round((beatNum / total) * 920);
   const speaking = !/^narrator$/i.test(speaker);
@@ -412,44 +412,24 @@ async function concatClips(clips, dest) {
   fs.unlinkSync(list);
 }
 
-async function fitToSixty(src, dest) {
+/** Keep full script audio; pad short reels slightly, never chop narration for a 60s cap. */
+async function finalizeReel(src, dest) {
   const dur = await probeSeconds(src);
-  if (dur >= 57 && dur <= 60.5) {
+  const minDur = 48;
+  if (dur >= minDur) {
     fs.copyFileSync(src, dest);
     return dur;
   }
-  if (dur < 57) {
-    const pad = (60 - dur).toFixed(2);
-    await ffmpeg([
-      "-i",
-      src,
-      "-vf",
-      `tpad=stop_mode=clone:stop_duration=${pad}`,
-      "-af",
-      `apad=pad_dur=${pad}`,
-      "-t",
-      "60",
-      "-c:v",
-      "libx264",
-      "-preset",
-      "veryfast",
-      "-crf",
-      "21",
-      "-c:a",
-      "aac",
-      "-b:a",
-      "192k",
-      "-movflags",
-      "+faststart",
-      dest,
-    ]);
-    return 60;
-  }
+  const pad = (minDur - dur).toFixed(2);
   await ffmpeg([
     "-i",
     src,
+    "-vf",
+    `tpad=stop_mode=clone:stop_duration=${pad}`,
+    "-af",
+    `apad=pad_dur=${pad}`,
     "-t",
-    "60",
+    String(minDur),
     "-c:v",
     "libx264",
     "-preset",
@@ -464,7 +444,7 @@ async function fitToSixty(src, dest) {
     "+faststart",
     dest,
   ]);
-  return 60;
+  return minDur;
 }
 
 const dlNames = {
@@ -491,7 +471,8 @@ async function buildReel(reel) {
         : null;
       const audio = path.join(tmp, `a${i}.mp3`);
       const clip = path.join(tmp, `c${i}.mp4`);
-      const spoken = b.narration || b.line;
+      const spoken = b.narration;
+      if (!spoken) throw new Error(`${reel.id} beat ${i + 1} missing narration`);
       process.stdout.write(`  ${reel.id} beat ${i + 1}/${total}\n`);
       await tts(spoken, voiceFor(b.speaker), audio);
       await enhanceVoice(audio);
@@ -527,7 +508,7 @@ async function buildReel(reel) {
     await concatClips(clips, raw);
 
     const final = path.join(outDir, `${reel.id}.mp4`);
-    const seconds = await fitToSixty(raw, final);
+    const seconds = await finalizeReel(raw, final);
 
     const captionPath = path.join(outDir, `${reel.id}-caption.txt`);
     fs.writeFileSync(

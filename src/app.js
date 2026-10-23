@@ -231,7 +231,7 @@ function reelsPage() {
     <section class="wrap section">
       <div class="kicker">Life stories · 9:16</div>
       <h2>Relatable reels with Hindi voice.</h2>
-      <p class="lede">Characters speak — captions stay off the video. On mobile, tap play or use Download to save for Instagram. Files are 1080×1920, about one minute each.</p>
+      <p class="lede">Characters speak — captions stay off the video. On mobile, tap play or use Download to save for Instagram. Full scripts are voiced (about 60–80 seconds each, 1080×1920).</p>
       <div class="reel-grid">${lifeReels.map(reelCard).join("")}</div>
     </section>
     ${footer()}
