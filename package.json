@@ -6,6 +6,7 @@
   "scripts": {
     "reels": "node scripts/build-reels.mjs",
     "life-reels": "node scripts/build-life-reels.mjs",
+    "book-pdf": "node scripts/build-book-pdf.mjs",
     "videos": "node scripts/build-videos.mjs",
     "youtube:auth": "node scripts/youtube-auth.mjs",
     "youtube:upload": "node scripts/upload-youtube.mjs",

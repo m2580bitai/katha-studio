@@ -352,6 +352,67 @@ h1 { font-size: clamp(2.4rem, 6vw, 4.6rem); line-height: 0.92; }
   margin: 12px 0 0;
   max-width: 380px;
 }
+.book-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 22px;
+  max-width: 720px;
+}
+.book-card .book-cover-thumb {
+  width: 100px;
+  height: 140px;
+  object-fit: cover;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.book-tagline {
+  font-family: Syne, sans-serif;
+  font-style: italic;
+  color: var(--saffron);
+}
+.book-reader {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding-bottom: 48px;
+}
+.book-chapter {
+  border: 3px solid var(--ink);
+  background: #fffdf6;
+  padding: 28px 32px 36px;
+  box-shadow: 8px 10px 0 var(--ink);
+  border-radius: 4px;
+}
+.chapter-title {
+  font-family: Syne, sans-serif;
+  font-size: 1.35rem;
+  margin: 0 0 24px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.chapter-num {
+  color: var(--saffron);
+  margin-right: 8px;
+}
+.book-prose {
+  font-size: 1.08rem;
+  line-height: 1.75;
+  color: var(--ink);
+}
+.book-prose p {
+  margin: 0 0 1.1em;
+  text-indent: 1.5em;
+}
+.book-prose p:first-child {
+  text-indent: 0;
+}
+.book-meta-footer {
+  margin-top: 24px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
 .reel-caption-meta {
   margin-top: 20px;
   padding: 12px 14px;
@@ -412,4 +473,7 @@ h1 { font-size: clamp(2.4rem, 6vw, 4.6rem); line-height: 0.92; }
   .reel-grid { grid-template-columns: 1fr; }
   .reel-phone { max-width: 100%; max-height: none; }
   .nav-links a { padding: 8px 10px; font-size: 0.75rem; }
+  .book-chapter { padding: 20px 18px 28px; }
+  .book-card a { flex-direction: column; }
+  .book-cover-thumb { width: 100%; height: auto; max-height: 200px; }
 }

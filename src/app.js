@@ -1,5 +1,6 @@
 import { comics, characters, studio, comicById, comicVideo } from "./comics.js";
 import { lifeReels, lifeReelById } from "./life-reels.js";
+import { proseBooks, bookById } from "./books.js";
 
 const app = document.getElementById("app");
 let autoTimer = null;
@@ -33,7 +34,8 @@ function nav(active) {
       </a>
       <nav class="nav-links">
         <a href="#/" ${active === "home" ? 'style="background:var(--saffron);color:#fffaf2"' : ""}>Home</a>
-        <a href="#/library" ${active === "library" ? 'style="background:var(--saffron);color:#fffaf2"' : ""}>Library</a>
+        <a href="#/library" ${active === "library" ? 'style="background:var(--saffron);color:#fffaf2"' : ""}>Comics</a>
+        <a href="#/books" ${active === "books" ? 'style="background:var(--saffron);color:#fffaf2"' : ""}>Books</a>
         <a href="#/characters" ${active === "characters" ? 'style="background:var(--saffron);color:#fffaf2"' : ""}>Characters</a>
         <a href="#/reels" ${active === "reels" ? 'style="background:var(--saffron);color:#fffaf2"' : ""}>Life reels</a>
       </nav>
@@ -45,7 +47,7 @@ function footer() {
   return `
     <footer class="wrap footer">
       <span>Original Indian characters and stories. Not affiliated with any existing comic house.</span>
-      <span>Read on screen · Watch voiced videos · Download reels & PDF</span>
+      <span>Comics · Thriller books · Life reels · Download PDFs</span>
     </footer>
   `;
 }
@@ -91,6 +93,12 @@ function home() {
     <section class="wrap section">
       <h2>This week’s rack</h2>
       <div class="grid">${comics.map(comicCard).join("")}</div>
+    </section>
+    <section class="wrap section">
+      <div class="kicker">Katha Studio Books</div>
+      <h2>Long-form fiction — start with the thriller.</h2>
+      <p class="lede">${proseBooks[0].logline}</p>
+      <a class="btn btn-primary" href="#/books/${proseBooks[0].id}">Read Night Ledger</a>
     </section>
     <section class="wrap section">
       <div class="kicker">New · voiced life stories</div>
@@ -304,6 +312,98 @@ function watchPage(comic) {
   `;
 }
 
+function bookCard(book) {
+  return `
+    <article class="card book-card">
+      <a href="#/books/${book.id}" style="color:inherit;text-decoration:none;display:flex;gap:16px;flex:1">
+        <img src="${asset(book.cover)}" alt="${book.title} cover" class="book-cover-thumb" />
+        <div class="card-body">
+          <div class="meta">${book.kind} · ${book.year} · ${book.imprint}</div>
+          <h3>${book.title}</h3>
+          <p class="book-tagline">${book.tagline}</p>
+          <p>${book.logline}</p>
+        </div>
+      </a>
+      <div style="display:flex;gap:8px;padding:0 14px 14px;flex-wrap:wrap">
+        <a class="chip" href="#/books/${book.id}">Read online</a>
+        <a class="chip btn-teal" href="${asset(book.pdf)}" download="${book.title.replace(/\s+/g, "-")}.pdf">Download PDF</a>
+      </div>
+    </article>
+  `;
+}
+
+function booksPage() {
+  return `
+    ${nav("books")}
+    <section class="wrap section">
+      <div class="kicker">Katha Studio Books</div>
+      <h2>Full-length fiction — proper chapters, print-ready PDF.</h2>
+      <p class="lede">Original novels with professional front matter: title page, contents, epigraph, and numbered chapters—formatted like a published trade paperback.</p>
+      <div class="book-list">${proseBooks.map(bookCard).join("")}</div>
+    </section>
+    ${footer()}
+  `;
+}
+
+function parseBook() {
+  const parts = path().split("/").filter(Boolean);
+  if (parts[0] !== "books") return null;
+  if (!parts[1]) return { list: true };
+  const book = bookById(parts[1]);
+  if (!book) return false;
+  const ch = Math.max(0, parseInt(parts[2] || "0", 10) || 0);
+  return { book, chapter: Math.min(ch, book.chapters.length - 1) };
+}
+
+function bookReader(book, chapterIndex) {
+  const ch = book.chapters[chapterIndex];
+  const n = book.chapters.length;
+  const paras = ch.text
+    .trim()
+    .split(/\n\n+/)
+    .map((p) => `<p>${p.replace(/\n/g, " ")}</p>`)
+    .join("");
+  return `
+    ${nav("books")}
+    <section class="wrap book-reader">
+      <div class="reader-top">
+        <div>
+          <div class="kicker">${book.author} · ${book.subtitle}</div>
+          <h2>${book.title}</h2>
+          <p class="lede book-tagline">${book.tagline}</p>
+        </div>
+        <div class="controls">
+          <button class="btn" data-book-act="prev" ${chapterIndex === 0 ? "disabled" : ""}>Previous</button>
+          <button class="btn" data-book-act="next" ${chapterIndex === n - 1 ? "disabled" : ""}>Next chapter</button>
+          <a class="btn btn-primary" href="${asset(book.pdf)}" download>Download PDF</a>
+          <a class="btn" href="#/books">All books</a>
+        </div>
+      </div>
+      <p class="page-num">Chapter ${ch.num} of ${n} · ${ch.title}</p>
+      <article class="book-chapter">
+        <h3 class="chapter-title"><span class="chapter-num">${ch.num}</span> ${ch.title}</h3>
+        <div class="book-prose">${paras}</div>
+      </article>
+      <p class="book-meta-footer">${book.imprint} · ${book.year}</p>
+    </section>
+    ${footer()}
+  `;
+}
+
+function bindBookReader(book, chapterIndex) {
+  app.querySelectorAll("[data-book-act]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const act = el.getAttribute("data-book-act");
+      if (act === "prev") go(`#/books/${book.id}/${Math.max(0, chapterIndex - 1)}`);
+      if (act === "next") go(`#/books/${book.id}/${Math.min(book.chapters.length - 1, chapterIndex + 1)}`);
+    });
+  });
+  window.onkeydown = (e) => {
+    if (e.key === "ArrowRight") go(`#/books/${book.id}/${Math.min(book.chapters.length - 1, chapterIndex + 1)}`);
+    if (e.key === "ArrowLeft") go(`#/books/${book.id}/${Math.max(0, chapterIndex - 1)}`);
+  };
+}
+
 function parseRead() {
   const parts = path().split("/").filter(Boolean);
   if (parts[0] !== "read") return null;
@@ -359,6 +459,23 @@ function render() {
   if (p === "/library") {
     stopAuto();
     app.innerHTML = library();
+    return;
+  }
+  const bookRoute = parseBook();
+  if (bookRoute === false) {
+    stopAuto();
+    app.innerHTML = notFound();
+    return;
+  }
+  if (bookRoute?.list) {
+    stopAuto();
+    app.innerHTML = booksPage();
+    return;
+  }
+  if (bookRoute?.book) {
+    stopAuto();
+    app.innerHTML = bookReader(bookRoute.book, bookRoute.chapter);
+    bindBookReader(bookRoute.book, bookRoute.chapter);
     return;
   }
   if (p === "/characters") {
