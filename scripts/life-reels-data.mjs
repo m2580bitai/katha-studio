@@ -1,43 +1,69 @@
 /**
- * Seven life-story reels — narration matches the approved scripts beat-for-beat.
- * Each reel: Hook → Build → Twist → Ending (voice only on video).
+ * Life reels: one clip = one speaker on screen + matching voice.
+ * Narrator clips = scene only (no character bounce). Dialogue clips = cast portrait animates.
  */
+export const SPEAKER_CAST = {
+  Rohan: "/images/char-raja.png",
+  Friend: "/images/char-chotu.png",
+  Aman: "/images/char-vikram.png",
+  Papa: "/images/char-guruji.png",
+  Kabir: "/images/char-vikram.png",
+  Arjun: "/images/char-raja.png",
+  Boss: "/images/char-guruji.png",
+  Meera: "/images/char-meera.png",
+  Behen: "/images/char-sana.png",
+  Neeraj: "/images/char-sonu.png",
+  Chaiwala: "/images/char-bommi.png",
+  Hero: "/images/char-vikram.png",
+};
+
 export const lifeReels = [
   {
     id: "life-last-seen",
     title: "The Last Seen",
     end: "Aaj kisi ek dost ko call kar lena. Sirf message nahi.",
-    caption:
-      "The Last Seen 📱 #Friendship #MentalHealth #HindiReels #KathaStudio",
-    beats: [
+    caption: "The Last Seen 📱 #Friendship #MentalHealth #HindiReels #KathaStudio",
+    clips: [
       {
-        image: "/images/panel-sana-1.png",
-        character: "/images/char-raja.png",
+        scene: "/images/panel-sana-1.png",
         speaker: "Narrator",
-        narration:
-          "Uske 500 Instagram followers the… par us raat uske paas baat karne ke liye ek bhi insaan nahi tha.",
+        text: "Uske 500 Instagram followers the… par us raat uske paas baat karne ke liye ek bhi insaan nahi tha.",
       },
       {
-        image: "/images/panel-sana-2.png",
-        character: "/images/char-raja.png",
+        scene: "/images/panel-sana-2.png",
         speaker: "Narrator",
-        narration:
-          "Rohan roz stories post karta tha. Jokes, parties, smiles. Har photo par likes aate the. Lekin jab raat ko usne apne best friend ko message kiya — Bhai, baat karni hai — message seen bhi nahi hua.",
+        text: "Rohan roz stories post karta tha. Jokes, parties, smiles. Har photo par likes aate the.",
       },
       {
-        image: "/images/panel-chotu-2.png",
-        character: "/images/char-chotu.png",
+        scene: "/images/panel-sana-1.png",
+        speaker: "Rohan",
+        text: "Lekin jab raat ko usne apne best friend ko message kiya — Bhai, baat karni hai — message seen bhi nahi hua.",
+      },
+      {
+        scene: "/images/panel-chotu-2.png",
+        speaker: "Narrator",
+        text: "Agli subah uske dost ka call aaya.",
+      },
+      {
+        scene: "/images/panel-chotu-2.png",
         speaker: "Friend",
-        narration:
-          "Agli subah uske dost ka call aaya. Bhai, kal raat phone silent tha. Tu theek hai na? Rohan kuch seconds chup raha. Phir bola, Haan bhai, ab theek hoon. Tune pooch liya na.",
+        text: "Bhai, kal raat phone silent tha. Tu theek hai na?",
         dramaticPause: true,
       },
       {
-        image: "/images/panel-sana-2.png",
-        character: "/images/char-sana.png",
+        scene: "/images/panel-chotu-3.png",
         speaker: "Narrator",
-        narration:
-          "Kabhi-kabhi kisi ki jaan bachane ke liye advice nahi… bas ek insaan chahiye hota hai jo pooch le — sach mein theek ho?",
+        text: "Rohan kuch seconds chup raha.",
+      },
+      {
+        scene: "/images/panel-chotu-3.png",
+        speaker: "Rohan",
+        text: "Haan bhai, ab theek hoon. Tune pooch liya na.",
+      },
+      {
+        scene: "/images/panel-sana-2.png",
+        speaker: "Narrator",
+        text: "Kabhi-kabhi kisi ki jaan bachane ke liye advice nahi… bas ek insaan chahiye hota hai jo pooch le — sach mein theek ho?",
       },
     ],
   },
@@ -46,35 +72,52 @@ export const lifeReels = [
     title: "Papa Ka Missed Call",
     end: "Call your parents before it becomes a memory.",
     caption: "Papa ka missed call 📞 #Family #Parents #HindiReels #KathaStudio",
-    beats: [
+    clips: [
       {
-        image: "/images/panel-vikram-1.png",
-        character: "/images/char-vikram.png",
+        scene: "/images/panel-vikram-1.png",
         speaker: "Narrator",
-        narration:
-          "Ek din Papa ke 17 missed calls dekhkar usne phone silent kar diya… aur agle din uske paas call karne ke liye koi nahi tha.",
+        text: "Ek din Papa ke 17 missed calls dekhkar usne phone silent kar diya… aur agle din uske paas call karne ke liye koi nahi tha.",
       },
       {
-        image: "/images/panel-vikram-2.png",
-        character: "/images/char-vikram.png",
+        scene: "/images/panel-vikram-2.png",
+        speaker: "Narrator",
+        text: "Aman office mein busy tha. Papa baar-baar phone kar rahe the.",
+      },
+      {
+        scene: "/images/panel-vikram-2.png",
         speaker: "Aman",
-        narration:
-          "Aman office mein busy tha. Papa baar-baar phone kar rahe the. Aman ne message kiya: Papa, meeting mein hoon. Baad mein call karta hoon. Papa ka reply aaya: Theek hai beta, bas teri awaaz sunni thi. Aman ne message padha, smile kiya, aur kaam mein lag gaya.",
+        text: "Papa, meeting mein hoon. Baad mein call karta hoon.",
       },
       {
-        image: "/images/char-amma.png",
-        character: "/images/char-guruji.png",
+        scene: "/images/char-amma.png",
         speaker: "Papa",
-        narration:
-          "Raat ko Papa ka ek aur message aaya: Beta, aaj tumhari bachpan wali photo mili. Yaad hai, tum mujhe har chhoti baat batate the? Aman ne turant call kiya. Papa hanskar bole: Arre, kuch nahi hua. Bas yaad aa gaya tu kitni jaldi bada ho gaya.",
+        text: "Theek hai beta, bas teri awaaz sunni thi.",
+      },
+      {
+        scene: "/images/panel-vikram-3.png",
+        speaker: "Narrator",
+        text: "Aman ne message padha, smile kiya, aur kaam mein lag gaya.",
+      },
+      {
+        scene: "/images/panel-vikram-1.png",
+        speaker: "Papa",
+        text: "Beta, aaj tumhari bachpan wali photo mili. Yaad hai, tum mujhe har chhoti baat batate the?",
         dramaticPause: true,
       },
       {
-        image: "/images/panel-vikram-3.png",
-        character: "/images/char-vikram.png",
+        scene: "/images/panel-vikram-3.png",
         speaker: "Narrator",
-        narration:
-          "Hum bade hokar kehte hain, Papa, aap samajhte kyun nahi? Kabhi hum bhi samjhein… unke paas ab humein dene ke liye waqt hai, par shayad humein dene ke liye hamare paas waqt kam hai.",
+        text: "Aman ne turant call kiya.",
+      },
+      {
+        scene: "/images/char-amma.png",
+        speaker: "Papa",
+        text: "Arre, kuch nahi hua. Bas yaad aa gaya tu kitni jaldi bada ho gaya.",
+      },
+      {
+        scene: "/images/panel-vikram-2.png",
+        speaker: "Narrator",
+        text: "Hum bade hokar kehte hain, Papa, aap samajhte kyun nahi? Kabhi hum bhi samjhein… unke paas ab humein dene ke liye waqt hai, par shayad humein dene ke liye hamare paas waqt kam hai.",
       },
     ],
   },
@@ -83,35 +126,57 @@ export const lifeReels = [
     title: "The Friend Who Stole His Idea",
     end: "Protect your work. Never compromise your character.",
     caption: "Idea vs character 💼 #Office #Integrity #HindiReels #KathaStudio",
-    beats: [
+    clips: [
       {
-        image: "/images/panel-vikram-2.png",
-        character: "/images/char-vikram.png",
+        scene: "/images/panel-vikram-2.png",
         speaker: "Narrator",
-        narration:
-          "Uske best friend ne uska idea chura liya… aur poori company ke saamne usi idea ka credit le gaya.",
+        text: "Uske best friend ne uska idea chura liya… aur poori company ke saamne usi idea ka credit le gaya.",
       },
       {
-        image: "/images/panel-raja-4.png",
-        character: "/images/char-raja.png",
-        speaker: "Arjun",
-        narration:
-          "Kabir ne teen hafte ek presentation par kaam kiya tha. Usne apne dost Arjun par bharosa karke draft share kiya. Meeting mein Arjun ne wahi presentation apne naam se dikha di. Boss ne kaha: Brilliant work, Arjun! Kabir chup raha. Sabko laga woh kamzor hai.",
+        scene: "/images/panel-vikram-3.png",
+        speaker: "Narrator",
+        text: "Kabir ne teen hafte ek presentation par kaam kiya tha. Usne apne dost Arjun par bharosa karke draft share kiya.",
       },
       {
-        image: "/images/panel-vikram-1.png",
-        character: "/images/char-vikram.png",
-        speaker: "Kabir",
-        narration:
-          "Agle round mein boss ne technical questions poochhe. Arjun ke paas jawab nahi the. Kabir ne calmly whiteboard par poora model samjha diya. Boss ne poochha: Yeh tumne banaya tha? Kabir bola: Sir, idea se zyada zaroori hai usse execute karna. Main aapko poora process dikha sakta hoon.",
+        scene: "/images/panel-raja-4.png",
+        speaker: "Narrator",
+        text: "Meeting mein Arjun ne wahi presentation apne naam se dikha di.",
+      },
+      {
+        scene: "/images/panel-raja-4.png",
+        speaker: "Boss",
+        text: "Brilliant work, Arjun!",
+      },
+      {
+        scene: "/images/panel-vikram-1.png",
+        speaker: "Narrator",
+        text: "Kabir chup raha. Sabko laga woh kamzor hai.",
+      },
+      {
+        scene: "/images/panel-vikram-1.png",
+        speaker: "Narrator",
+        text: "Agle round mein boss ne technical questions poochhe. Arjun ke paas jawab nahi the.",
         dramaticPause: true,
       },
       {
-        image: "/images/panel-vikram-3.png",
-        character: "/images/char-vikram.png",
+        scene: "/images/panel-vikram-2.png",
         speaker: "Narrator",
-        narration:
-          "Kisi ka credit chura kar tum ek meeting jeet sakte ho. Lekin skill, character aur consistency ko kitni der churaoge?",
+        text: "Kabir ne calmly whiteboard par poora model samjha diya.",
+      },
+      {
+        scene: "/images/panel-vikram-2.png",
+        speaker: "Boss",
+        text: "Yeh tumne banaya tha?",
+      },
+      {
+        scene: "/images/panel-vikram-3.png",
+        speaker: "Kabir",
+        text: "Sir, idea se zyada zaroori hai usse execute karna. Main aapko poora process dikha sakta hoon.",
+      },
+      {
+        scene: "/images/panel-vikram-1.png",
+        speaker: "Narrator",
+        text: "Kisi ka credit chura kar tum ek meeting jeet sakte ho. Lekin skill, character aur consistency ko kitni der churaoge?",
       },
     ],
   },
@@ -120,35 +185,37 @@ export const lifeReels = [
     title: "Everyone Was Ahead of Her",
     end: "Your timeline is not their timeline.",
     caption: "Highlight reel vs real life 🌱 #SelfWorth #HindiReels #KathaStudio",
-    beats: [
+    clips: [
       {
-        image: "/images/panel-leela-1.png",
-        character: "/images/char-leela.png",
+        scene: "/images/panel-leela-1.png",
         speaker: "Narrator",
-        narration:
-          "Usne Instagram par apne saare friends ko successful dekha… aur pehli baar apni zindagi se nafrat hone lagi.",
+        text: "Usne Instagram par apne saare friends ko successful dekha… aur pehli baar apni zindagi se nafrat hone lagi.",
       },
       {
-        image: "/images/panel-leela-2.png",
-        character: "/images/char-meera.png",
+        scene: "/images/panel-leela-2.png",
+        speaker: "Narrator",
+        text: "Ek friend Europe mein tha. Doosre ne new car li. Teesre ki salary double ho gayi.",
+      },
+      {
+        scene: "/images/panel-meera-4.png",
         speaker: "Meera",
-        narration:
-          "Ek friend Europe mein tha. Doosre ne new car li. Teesre ki salary double ho gayi. Aur Meera? Wahi job, wahi room, wahi problems. Usne socha: Shayad main life mein kuch kar hi nahi rahi.",
+        text: "Aur Meera? Wahi job, wahi room, wahi problems. Shayad main life mein kuch kar hi nahi rahi.",
       },
       {
-        image: "/images/panel-meera-2.png",
-        character: "/images/char-meera.png",
+        scene: "/images/panel-meera-2.png",
         speaker: "Behen",
-        narration:
-          "Agle din uski chhoti behen ne kaha: Didi, aapko pata hai? Main jab bhi give up karne wali hoti hoon, aapko dekhti hoon. Aap itni problems ke baad bhi try karti ho. Meera ko pehli baar ehsaas hua ki jis zindagi ko woh ordinary samajh rahi thi, wahi kisi aur ke liye inspiration thi.",
+        text: "Didi, aapko pata hai? Main jab bhi give up karne wali hoti hoon, aapko dekhti hoon. Aap itni problems ke baad bhi try karti ho.",
         dramaticPause: true,
       },
       {
-        image: "/images/panel-leela-1.png",
-        character: "/images/char-leela.png",
+        scene: "/images/panel-meera-2.png",
         speaker: "Narrator",
-        narration:
-          "Tum apni life ka behind-the-scenes dekhte ho aur doosron ki life ka highlight reel. Phir khud ko loser kyun bolte ho?",
+        text: "Meera ko pehli baar ehsaas hua ki jis zindagi ko woh ordinary samajh rahi thi, wahi kisi aur ke liye inspiration thi.",
+      },
+      {
+        scene: "/images/panel-leela-1.png",
+        speaker: "Narrator",
+        text: "Tum apni life ka behind-the-scenes dekhte ho aur doosron ki life ka highlight reel. Phir khud ko loser kyun bolte ho?",
       },
     ],
   },
@@ -157,35 +224,47 @@ export const lifeReels = [
     title: "The Man Who Never Asked for Money",
     end: "Respect everyone. You never know what someone carries.",
     caption: "Chai ki dukaan wali kindness ☕ #Kindness #HindiReels #KathaStudio",
-    beats: [
+    clips: [
       {
-        image: "/images/panel-bommi-1.png",
-        character: "/images/char-sonu.png",
+        scene: "/images/panel-bommi-1.png",
         speaker: "Narrator",
-        narration:
-          "Woh chaiwale ko roz 20 rupaye extra deta tha… phir ek din pata chala ki chaiwala uske baare mein sab jaanta tha.",
+        text: "Woh chaiwale ko roz 20 rupaye extra deta tha… phir ek din pata chala ki chaiwala uske baare mein sab jaanta tha.",
       },
       {
-        image: "/images/panel-chotu-1.png",
-        character: "/images/char-sonu.png",
+        scene: "/images/panel-chotu-1.png",
         speaker: "Narrator",
-        narration:
-          "Neeraj roz office jaate waqt ek chai ki dukaan par rukta tha. Chaiwala hamesha kehta: Sir, aaj thake hue lag rahe ho. Neeraj hanskar taal deta. Ek din uski job chali gayi. Paise bachane ke liye usne chai peena bhi band kar diya.",
+        text: "Neeraj roz office jaate waqt ek chai ki dukaan par rukta tha.",
       },
       {
-        image: "/images/panel-bommi-2.png",
-        character: "/images/char-bommi.png",
+        scene: "/images/panel-bommi-2.png",
         speaker: "Chaiwala",
-        narration:
-          "Ek hafte baad chaiwala khud uske paas aaya. Sir, chai nahi piyoge aaj? Neeraj ne nazrein jhuka kar kaha: Abhi thoda budget tight hai. Chaiwala bola: Sir, paise baad mein de dena. Aap roz meri chai peete the. Aaj meri baari hai.",
+        text: "Sir, aaj thake hue lag rahe ho.",
+      },
+      {
+        scene: "/images/panel-chotu-1.png",
+        speaker: "Narrator",
+        text: "Neeraj hanskar taal deta. Ek din uski job chali gayi. Paise bachane ke liye usne chai peena bhi band kar diya.",
+      },
+      {
+        scene: "/images/panel-bommi-1.png",
+        speaker: "Chaiwala",
+        text: "Sir, chai nahi piyoge aaj?",
         dramaticPause: true,
       },
       {
-        image: "/images/panel-chotu-2.png",
-        character: "/images/char-sonu.png",
+        scene: "/images/panel-chotu-2.png",
+        speaker: "Neeraj",
+        text: "Abhi thoda budget tight hai.",
+      },
+      {
+        scene: "/images/panel-bommi-2.png",
+        speaker: "Chaiwala",
+        text: "Sir, paise baad mein de dena. Aap roz meri chai peete the. Aaj meri baari hai.",
+      },
+      {
+        scene: "/images/panel-chotu-2.png",
         speaker: "Narrator",
-        narration:
-          "Neeraj ko us din samajh aaya — kindness hamesha bade gharon se nahi aati. Kabhi-kabhi woh ek chhoti si chai ki dukaan se bhi mil jaati hai.",
+        text: "Neeraj ko us din samajh aaya — kindness hamesha bade gharon se nahi aati. Kabhi-kabhi woh ek chhoti si chai ki dukaan se bhi mil jaati hai.",
       },
     ],
   },
@@ -194,35 +273,47 @@ export const lifeReels = [
     title: "The Rejection Letter",
     end: "Rejection is information, not your identity.",
     caption: "28 rejections, 29th try 📧 #Career #HindiReels #KathaStudio",
-    beats: [
+    clips: [
       {
-        image: "/images/panel-vikram-3.png",
-        character: "/images/char-vikram.png",
+        scene: "/images/panel-vikram-3.png",
         speaker: "Narrator",
-        narration:
-          "Usko 27 companies ne reject kiya. 28th company ka email dekhkar usne laptop band kar diya.",
+        text: "Usko 27 companies ne reject kiya. 28th company ka email dekhkar usne laptop band kar diya.",
       },
       {
-        image: "/images/panel-vikram-1.png",
-        character: "/images/char-vikram.png",
+        scene: "/images/panel-vikram-1.png",
         speaker: "Narrator",
-        narration:
-          "Har interview ke baad wahi line: We regret to inform you… Doston ne kaha: Bhai, kuch aur kar le. Gharwale kehte: Kitna time lagega? Usne 28th email khola. Rejected. Us raat usne apna resume delete karne ka socha.",
+        text: "Har interview ke baad wahi line: We regret to inform you…",
       },
       {
-        image: "/images/panel-leela-2.png",
-        character: "/images/char-vikram.png",
+        scene: "/images/panel-vikram-2.png",
         speaker: "Narrator",
-        narration:
-          "Laptop band karne se pehle ek purana email dikha — pehli company ka feedback. Your technical skills need improvement. Please apply again after six months. Usne us email ko gusse mein delete nahi kiya tha. Usne feedback par kaam kiya, projects banaye, aur interview practice ki. Agli subah usne 29th application bheji.",
+        text: "Doston ne kaha: Bhai, kuch aur kar le. Gharwale kehte: Kitna time lagega?",
+      },
+      {
+        scene: "/images/panel-vikram-1.png",
+        speaker: "Hero",
+        text: "Usne 28th email khola. Rejected. Us raat usne apna resume delete karne ka socha.",
+      },
+      {
+        scene: "/images/panel-leela-2.png",
+        speaker: "Narrator",
+        text: "Laptop band karne se pehle ek purana email dikha — pehli company ka feedback. Your technical skills need improvement. Please apply again after six months.",
         dramaticPause: true,
       },
       {
-        image: "/images/panel-vikram-2.png",
-        character: "/images/char-vikram.png",
+        scene: "/images/panel-vikram-3.png",
         speaker: "Narrator",
-        narration:
-          "Success ka matlab har baar jeetna nahi. Kabhi-kabhi success bas itna hota hai ki 28 baar haarne ke baad tum 29vi baar try karte ho.",
+        text: "Usne us email ko gusse mein delete nahi kiya tha. Usne feedback par kaam kiya, projects banaye, aur interview practice ki.",
+      },
+      {
+        scene: "/images/panel-vikram-2.png",
+        speaker: "Hero",
+        text: "Agli subah usne 29th application bheji.",
+      },
+      {
+        scene: "/images/panel-vikram-1.png",
+        speaker: "Narrator",
+        text: "Success ka matlab har baar jeetna nahi. Kabhi-kabhi success bas itna hota hai ki 28 baar haarne ke baad tum 29vi baar try karte ho.",
       },
     ],
   },
@@ -231,35 +322,52 @@ export const lifeReels = [
     title: "The Friend Who Stopped Calling",
     end: "If the relationship matters, let your ego lose once.",
     caption: "Pehle kaun jhukega? 🤝 #Friendship #HindiReels #KathaStudio",
-    beats: [
+    clips: [
       {
-        image: "/images/panel-chotu-1.png",
-        character: "/images/char-chotu.png",
+        scene: "/images/panel-chotu-1.png",
         speaker: "Narrator",
-        narration:
-          "Teen saal tak usne apne best friend ko call nahi kiya… kyunki woh wait kar raha tha ki pehle phone woh kare.",
+        text: "Teen saal tak usne apne best friend ko call nahi kiya… kyunki woh wait kar raha tha ki pehle phone woh kare.",
       },
       {
-        image: "/images/panel-chotu-2.png",
-        character: "/images/char-raja.png",
+        scene: "/images/panel-chotu-2.png",
         speaker: "Narrator",
-        narration:
-          "Dono school se dost the. Pehle har din baat hoti thi. Phir jobs, relationships, responsibilities aayi. Ek din chhoti si baat par argument hua. Dono ne socha: Ab woh call karega. Din mahino mein badle. Mahine saalon mein.",
+        text: "Dono school se dost the. Pehle har din baat hoti thi. Phir jobs, relationships, responsibilities aayi.",
       },
       {
-        image: "/images/panel-chotu-4.png",
-        character: "/images/char-chotu.png",
-        speaker: "Friend",
-        narration:
-          "Ek mutual friend ne bataya ki uska dost doosre shehar shift ho raha hai. Usne turant call kiya. Bhai, itne saal ho gaye… Doosri taraf se awaaz aayi: Haan bhai. Main bhi soch raha tha tu call karega. Dono hansne lage, phir chup ho gaye.",
+        scene: "/images/panel-chotu-3.png",
+        speaker: "Narrator",
+        text: "Ek din chhoti si baat par argument hua. Dono ne socha: Ab woh call karega. Din mahino mein badle. Mahine saalon mein.",
+      },
+      {
+        scene: "/images/panel-chotu-4.png",
+        speaker: "Narrator",
+        text: "Ek mutual friend ne bataya ki uska dost doosre shehar shift ho raha hai.",
+      },
+      {
+        scene: "/images/panel-chotu-4.png",
+        speaker: "Narrator",
+        text: "Usne turant call kiya.",
+      },
+      {
+        scene: "/images/panel-chotu-4.png",
+        speaker: "Rohan",
+        text: "Bhai, itne saal ho gaye…",
         dramaticPause: true,
       },
       {
-        image: "/images/panel-chotu-3.png",
-        character: "/images/char-raja.png",
+        scene: "/images/panel-chotu-2.png",
+        speaker: "Friend",
+        text: "Haan bhai. Main bhi soch raha tha tu call karega.",
+      },
+      {
+        scene: "/images/panel-chotu-3.png",
         speaker: "Narrator",
-        narration:
-          "Kabhi-kabhi rishta kisi bade dhokhe se nahi tootta. Do logon ke is intezaar mein toot jaata hai ki pehle jhukega kaun.",
+        text: "Dono hansne lage, phir chup ho gaye.",
+      },
+      {
+        scene: "/images/panel-chotu-1.png",
+        speaker: "Narrator",
+        text: "Kabhi-kabhi rishta kisi bade dhokhe se nahi tootta. Do logon ke is intezaar mein toot jaata hai ki pehle jhukega kaun.",
       },
     ],
   },

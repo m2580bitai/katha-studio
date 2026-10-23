@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import ffmpegPath from "ffmpeg-static";
-import { lifeReels } from "./life-reels-data.mjs";
+import { lifeReels, SPEAKER_CAST } from "./life-reels-data.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const outDir = path.join(root, "public", "reels", "life");
@@ -23,11 +23,17 @@ const FPS = 30;
 const SAFE_TOP = 200;
 const SAFE_BOTTOM = 360;
 
-const FEMALE = /meera|amma|behen|priya|leela|bommi|sana|swara/i;
+const FEMALE = /^(meera|behen|amma|priya|leela|bommi|sana)$/i;
 
 function voiceFor(speaker) {
   if (FEMALE.test(speaker)) return "hi-IN-SwaraNeural";
   return "hi-IN-MadhurNeural";
+}
+
+function castImage(speaker, override) {
+  if (override) return override;
+  const rel = SPEAKER_CAST[speaker];
+  return rel ? path.join(root, "public", rel.replace(/^\//, "")) : null;
 }
 
 function displaySpeaker(speaker) {
@@ -163,10 +169,7 @@ function overlayDraws({ progress, brandFile, speaking }) {
 }
 
 function characterScale(speaking) {
-  if (speaking) {
-    return `scale=w='560+52*sin(2*PI*on/9)':h=-1,format=rgba`;
-  }
-  return `scale=500:-1,format=rgba`;
+  return speaking ? `scale=580:-1,format=rgba` : `scale=500:-1,format=rgba`;
 }
 
 async function makeBeatClip({
@@ -460,23 +463,23 @@ const dlNames = {
 async function buildReel(reel) {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), `life-${reel.id}-`));
   const clips = [];
-  const total = reel.beats.length;
+  const storyClips = reel.clips || reel.beats || [];
+  const total = storyClips.length;
 
   try {
-    for (let i = 0; i < reel.beats.length; i++) {
-      const b = reel.beats[i];
-      const img = path.join(root, "public", b.image.replace(/^\//, ""));
-      const char = b.character
-        ? path.join(root, "public", b.character.replace(/^\//, ""))
-        : null;
+    for (let i = 0; i < storyClips.length; i++) {
+      const b = storyClips[i];
+      const scene = b.scene || b.image;
+      const img = path.join(root, "public", scene.replace(/^\//, ""));
+      const char = castImage(b.speaker, b.character ? path.join(root, "public", b.character.replace(/^\//, "")) : null);
       const audio = path.join(tmp, `a${i}.mp3`);
       const clip = path.join(tmp, `c${i}.mp4`);
-      const spoken = b.narration;
-      if (!spoken) throw new Error(`${reel.id} beat ${i + 1} missing narration`);
-      process.stdout.write(`  ${reel.id} beat ${i + 1}/${total}\n`);
+      const spoken = b.text || b.narration;
+      if (!spoken) throw new Error(`${reel.id} clip ${i + 1} missing text`);
+      process.stdout.write(`  ${reel.id} ${b.speaker} clip ${i + 1}/${total}\n`);
       await tts(spoken, voiceFor(b.speaker), audio);
       await enhanceVoice(audio);
-      if (b.dramaticPause) await leadingSilence(audio, 0.85);
+      if (b.dramaticPause) await leadingSilence(audio, 0.65);
       await makeBeatClip({
         imagePath: img,
         characterPath: char,
@@ -492,10 +495,10 @@ async function buildReel(reel) {
     }
 
     const endClip = path.join(tmp, "end.mp4");
-    const cover = path.join(root, "public", reel.beats[0].image.replace(/^\//, ""));
-    const coverChar = reel.beats[0].character
-      ? path.join(root, "public", reel.beats[0].character.replace(/^\//, ""))
-      : null;
+    const first = storyClips[0];
+    const coverScene = first.scene || first.image;
+    const cover = path.join(root, "public", coverScene.replace(/^\//, ""));
+    const coverChar = castImage(first.speaker, null);
     await makeEndCard({
       imagePath: cover,
       characterPath: coverChar,
