@@ -1,4 +1,5 @@
 import { chapters } from "./chapters.js";
+import { achPages } from "./ach-pages.js";
 
 export const nightLedger = {
   id: "night-ledger",
@@ -24,4 +25,6 @@ export const nightLedger = {
   about:
     "Night Ledger is an original literary thriller set in contemporary Chennai—part forensic puzzle, part family reckoning, in the tradition of domestic-noir and institutional corruption novels. Written for Katha Studio Books.",
   chapters,
+  achPages,
+  readerMode: "ach",
 };

@@ -104,7 +104,7 @@ function home() {
       <div class="kicker">New · voiced life stories</div>
       <h2>Seven reels that sound like real people.</h2>
       <p class="lede">Hindi voice, moving characters, no dialogue on screen — watch in the browser or download for Instagram.</p>
-      <a class="btn btn-primary" href="#/reels">Open life reels</a>
+      <a class="btn btn-primary" href="#/reels/reel-tu-late-nahi">Watch motivation reel</a>
     </section>
     ${footer()}
   `;
@@ -234,14 +234,21 @@ function reelCard(reel) {
 }
 
 function reelsPage() {
+  const featured = lifeReels.filter((r) => r.featured);
+  const archive = lifeReels.filter((r) => !r.featured);
   return `
     ${nav("reels")}
     <section class="wrap section">
-      <div class="kicker">Life stories · 9:16</div>
-      <h2>Relatable reels with Hindi voice.</h2>
-      <p class="lede">Characters speak — captions stay off the video. On mobile, tap play or use Download to save for Instagram. Full scripts are voiced (about 60–80 seconds each, 1080×1920).</p>
-      <div class="reel-grid">${lifeReels.map(reelCard).join("")}</div>
+      <div class="kicker">New · comic animation</div>
+      <h2>Motivating reels — relatable art, Hindi voice, panel motion.</h2>
+      <p class="lede">Full-screen illustrated panels (Amar Chitra style frame). Tap play — sound on. If video buffers, use Download MP4.</p>
+      <div class="reel-grid">${featured.map(reelCard).join("")}</div>
     </section>
+    ${
+      archive.length
+        ? `<section class="wrap section"><div class="kicker">Archive</div><h2>Earlier life-story reels</h2><div class="reel-grid">${archive.map(reelCard).join("")}</div></section>`
+        : ""
+    }
     ${footer()}
   `;
 }
@@ -263,7 +270,7 @@ function reelWatchPage(reel) {
       <h2>${reel.title}</h2>
       <p class="lede">${reel.end}</p>
       <div class="reel-phone reel-phone--solo">
-        <video class="reel-player" controls playsinline preload="metadata" poster="${poster}">
+        <video class="reel-player" controls playsinline webkit-playsinline preload="auto" poster="${poster}">
           <source src="${src}" type="video/mp4" />
         </video>
       </div>
@@ -337,12 +344,16 @@ function booksPage() {
     ${nav("books")}
     <section class="wrap section">
       <div class="kicker">Katha Studio Books</div>
-      <h2>Full-length fiction — proper chapters, print-ready PDF.</h2>
-      <p class="lede">Original novels with professional front matter: title page, contents, epigraph, and numbered chapters—formatted like a published trade paperback.</p>
+      <h2>Illustrated thrillers — Amar Chitra Katha style.</h2>
+      <p class="lede">Big panels, bold borders, easy reading on phone. Tap through illustrated pages or download the PDF. <strong>Night Ledger</strong> by Manish.</p>
       <div class="book-list">${proseBooks.map(bookCard).join("")}</div>
     </section>
     ${footer()}
   `;
+}
+
+function bookPageCount(book) {
+  return book.achPages?.length || book.chapters.length;
 }
 
 function parseBook() {
@@ -351,12 +362,57 @@ function parseBook() {
   if (!parts[1]) return { list: true };
   const book = bookById(parts[1]);
   if (!book) return false;
-  const ch = Math.max(0, parseInt(parts[2] || "0", 10) || 0);
-  return { book, chapter: Math.min(ch, book.chapters.length - 1) };
+  const idx = Math.max(0, parseInt(parts[2] || "0", 10) || 0);
+  const max = bookPageCount(book) - 1;
+  return { book, pageIndex: Math.min(idx, max) };
 }
 
-function bookReader(book, chapterIndex) {
-  const ch = book.chapters[chapterIndex];
+function achBookReader(book, pageIndex) {
+  const pages = book.achPages;
+  const pg = pages[pageIndex];
+  const n = pages.length;
+  const isCover = pg.type === "cover";
+  const isEnd = pg.type === "end";
+  const isChapter = pg.type === "chapter";
+  return `
+    ${nav("books")}
+    <section class="wrap ach-reader-wrap">
+      <div class="reader-top ach-reader-top">
+        <div>
+          <div class="kicker">${book.author} · Katha Studio Books</div>
+          <h2>${book.title}</h2>
+        </div>
+        <div class="controls">
+          <button class="btn" data-book-act="prev" ${pageIndex === 0 ? "disabled" : ""}>Prev page</button>
+          <button class="btn btn-primary" data-book-act="next" ${pageIndex === n - 1 ? "disabled" : ""}>Next page</button>
+          <a class="btn" href="${asset(book.pdf)}" download>PDF</a>
+        </div>
+      </div>
+      <p class="page-num">Page ${pageIndex + 1} / ${n}</p>
+      <article class="ach-page ${isCover ? "ach-page--cover" : ""}">
+        <header class="ach-banner">
+          <span class="ach-brand">KATHA STUDIO</span>
+          <span class="ach-book-title">${book.title}</span>
+        </header>
+        <div class="ach-panel-frame">
+          <img src="${asset(pg.image)}" alt="" class="ach-panel-img" />
+        </div>
+        <div class="ach-caption">
+          ${isCover ? `<h3 class="ach-cover-title">${pg.title}</h3><p class="ach-cover-sub">${pg.subtitle}</p><p>${pg.caption}</p>` : ""}
+          ${isChapter ? `<h4 class="ach-chapter-head">Chapter ${pg.chapter}</h4><h3>${pg.title}</h3>` : ""}
+          ${isEnd ? `<h3>${pg.title}</h3><p>${pg.caption}</p>` : ""}
+          ${pg.type === "story" ? `<p class="ach-story">${pg.caption}</p>` : ""}
+        </div>
+      </article>
+      <p class="book-meta-footer">Arrow keys turn pages · Illustrated edition</p>
+    </section>
+    ${footer()}
+  `;
+}
+
+function bookReader(book, pageIndex) {
+  if (book.achPages?.length) return achBookReader(book, pageIndex);
+  const ch = book.chapters[pageIndex];
   const n = book.chapters.length;
   const paras = ch.text
     .trim()
@@ -370,37 +426,30 @@ function bookReader(book, chapterIndex) {
         <div>
           <div class="kicker">${book.author} · ${book.subtitle}</div>
           <h2>${book.title}</h2>
-          <p class="lede book-tagline">${book.tagline}</p>
         </div>
         <div class="controls">
-          <button class="btn" data-book-act="prev" ${chapterIndex === 0 ? "disabled" : ""}>Previous</button>
-          <button class="btn" data-book-act="next" ${chapterIndex === n - 1 ? "disabled" : ""}>Next chapter</button>
-          <a class="btn btn-primary" href="${asset(book.pdf)}" download>Download PDF</a>
-          <a class="btn" href="#/books">All books</a>
+          <button class="btn" data-book-act="prev" ${pageIndex === 0 ? "disabled" : ""}>Previous</button>
+          <button class="btn" data-book-act="next" ${pageIndex === n - 1 ? "disabled" : ""}>Next</button>
         </div>
       </div>
-      <p class="page-num">Chapter ${ch.num} of ${n} · ${ch.title}</p>
-      <article class="book-chapter">
-        <h3 class="chapter-title"><span class="chapter-num">${ch.num}</span><span>${ch.title}</span></h3>
-        <div class="book-prose">${paras}</div>
-      </article>
-      <p class="book-meta-footer">${book.imprint} · ${book.year}</p>
+      <article class="book-chapter"><div class="book-prose">${paras}</div></article>
     </section>
     ${footer()}
   `;
 }
 
-function bindBookReader(book, chapterIndex) {
+function bindBookReader(book, pageIndex) {
+  const total = bookPageCount(book);
   app.querySelectorAll("[data-book-act]").forEach((el) => {
     el.addEventListener("click", () => {
       const act = el.getAttribute("data-book-act");
-      if (act === "prev") go(`#/books/${book.id}/${Math.max(0, chapterIndex - 1)}`);
-      if (act === "next") go(`#/books/${book.id}/${Math.min(book.chapters.length - 1, chapterIndex + 1)}`);
+      if (act === "prev") go(`#/books/${book.id}/${Math.max(0, pageIndex - 1)}`);
+      if (act === "next") go(`#/books/${book.id}/${Math.min(total - 1, pageIndex + 1)}`);
     });
   });
   window.onkeydown = (e) => {
-    if (e.key === "ArrowRight") go(`#/books/${book.id}/${Math.min(book.chapters.length - 1, chapterIndex + 1)}`);
-    if (e.key === "ArrowLeft") go(`#/books/${book.id}/${Math.max(0, chapterIndex - 1)}`);
+    if (e.key === "ArrowRight") go(`#/books/${book.id}/${Math.min(total - 1, pageIndex + 1)}`);
+    if (e.key === "ArrowLeft") go(`#/books/${book.id}/${Math.max(0, pageIndex - 1)}`);
   };
 }
 
@@ -474,8 +523,8 @@ function render() {
   }
   if (bookRoute?.book) {
     stopAuto();
-    app.innerHTML = bookReader(bookRoute.book, bookRoute.chapter);
-    bindBookReader(bookRoute.book, bookRoute.chapter);
+    app.innerHTML = bookReader(bookRoute.book, bookRoute.pageIndex);
+    bindBookReader(bookRoute.book, bookRoute.pageIndex);
     return;
   }
   if (p === "/characters") {
